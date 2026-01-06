@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Denge Oyunu Kura Sistemi</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #2c3e50;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px;
+        }
+
+        .container {
+            background-color: #34495e;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 { 
+            margin-bottom: 20px; 
+            color: #f1c40f; 
+            font-size: 1.8rem;
+        }
+
+        .settings-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .input-group label { font-size: 0.85rem; margin-bottom: 5px; color: #bdc3c7; }
+        .input-group input {
+            padding: 10px;
+            border-radius: 5px;
+            border: none;
+            background: #ecf0f1;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 1rem;
+            width: 100%;
+        }
+
+        .result-box {
+            background-color: #ecf0f1;
+            color: #2c3e50;
+            min-height: 150px;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-size: 1.8rem;
+            font-weight: bold;
+            border: 4px solid #f1c40f;
+            transition: all 0.3s;
+            word-break: break-word;
+            line-height: 1.3;
+        }
+
+        .btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 5px 0;
+            width: 100%;
+        }
+
+        .btn:hover { background-color: #c0392b; }
+        .btn.secondary { background-color: #2980b9; }
+        .btn.secondary:hover { background-color: #1f618d; }
+
+        .status {
+            margin-top: 20px;
+            text-align: left;
+            background: #233342;
+            padding: 15px;
+            border-radius: 8px;
+        }
+
+        .status ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .status li {
+            background: #1abc9c;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 80px;
+        }
+
+        .status li.empty { background: #7f8c8d; opacity: 0.8; }
+        
+        .plus-btn {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            flex-shrink: 0;
+        }
+        
+        .plus-btn:active { transform: scale(0.95); }
+
+        .special-badge {
+            display: block;
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #f39c12;
+            border-top: 1px solid #ffffff20;
+            padding-top: 10px;
+            line-height: 1.4;
+        }
+
+        @media (max-width: 480px) {
+            .settings-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .container {
+                padding: 1rem;
+            }
+
+            .result-box {
+                font-size: 1.5rem;
+            }
+            
+            .status li {
+                flex-grow: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Denge Kulesi</h1>
+
+    <div id="settingsArea">
+        <p style="font-size: 0.9rem; color: #bdc3c7;">Her harften kaç adet olduğunu girin:</p>
+        <div class="settings-grid">
+            <div class="input-group"><label>L Sayısı</label><input type="number" id="countL" value="2" min="0" inputmode="numeric"></div>
+            <div class="input-group"><label>r Sayısı</label><input type="number" id="countr" value="6" min="0" inputmode="numeric"></div>
+            <div class="input-group"><label>T Sayısı</label><input type="number" id="countT" value="2" min="0" inputmode="numeric"></div>
+            <div class="input-group"><label>O Sayısı</label><input type="number" id="countO" value="2" min="0" inputmode="numeric"></div>
+            <div class="input-group"><label>I Sayısı</label><input type="number" id="countI" value="2" min="0" inputmode="numeric"></div>
+            <div class="input-group"><label>z Sayısı</label><input type="number" id="countz" value="2" min="0" inputmode="numeric"></div>
+        </div>
+        <button class="btn secondary" onclick="startGame()">Oyunu Başlat / Sıfırla</button>
+    </div>
+
+    <div id="gameArea" style="display:none;">
+        <div class="result-box" id="resultDisplay">
+            Başlamak için çek!
+        </div>
+
+        <button class="btn" onclick="drawItem()">Kura Çek</button>
+        <button class="btn secondary" onclick="resetSettings()">Ayarlara Dön</button>
+
+        <div class="status">
+            <div style="text-align: center; margin-bottom: 5px;"><strong>Kalan Harfler</strong></div>
+            <ul id="inventoryList">
+                </ul>
+            <span class="special-badge">* Özel kartlar (Yön, 2 Tur, Üstten al) asla bitmez. <br> * (+)'ya basarak harf ekleyebilirsiniz.</span>
+        </div>
+    </div>
+</div>
+
+<script>
+    const specialOptions = [
+        "Yön Değiştirme",
+        "2 Tur Çek",
+        "Üstten Bi Tane Al"
+    ];
+
+    let inventory = {};
+
+    function startGame() {
+        inventory = {
+            'L': parseInt(document.getElementById('countL').value) || 0,
+            'r': parseInt(document.getElementById('countr').value) || 0,
+            'T': parseInt(document.getElementById('countT').value) || 0,
+            'O': parseInt(document.getElementById('countO').value) || 0,
+            'I': parseInt(document.getElementById('countI').value) || 0,
+            'z': parseInt(document.getElementById('countz').value) || 0
+        };
+
+        document.getElementById('settingsArea').style.display = 'none';
+        document.getElementById('gameArea').style.display = 'block';
+        document.getElementById('resultDisplay').innerText = "Hazır...";
+        
+        updateInventoryDisplay();
+    }
+
+    function resetSettings() {
+        document.getElementById('gameArea').style.display = 'none';
+        document.getElementById('settingsArea').style.display = 'block';
+    }
+
+    function drawItem() {
+        let pool = [];
+
+        for (let [key, count] of Object.entries(inventory)) {
+            for (let i = 0; i < count; i++) {
+                pool.push({ type: 'letter', value: key });
+            }
+        }
+
+        specialOptions.forEach(opt => {
+            pool.push({ type: 'special', value: opt });
+        });
+
+        const randomIndex = Math.floor(Math.random() * pool.length);
+        const selected = pool[randomIndex];
+
+        const display = document.getElementById('resultDisplay');
+        
+        if (selected.type === 'letter') {
+            inventory[selected.value]--;
+            display.style.color = "#2c3e50";
+            display.innerText = selected.value;
+        } else {
+            display.style.color = "#c0392b";
+            display.innerText = selected.value;
+        }
+
+        display.style.transform = "scale(1.05)";
+        setTimeout(() => display.style.transform = "scale(1)", 200);
+
+        updateInventoryDisplay();
+    }
+
+    function addItem(key) {
+        inventory[key]++;
+        updateInventoryDisplay();
+    }
+
+    function updateInventoryDisplay() {
+        const list = document.getElementById('inventoryList');
+        list.innerHTML = '';
+
+        for (let [key, count] of Object.entries(inventory)) {
+            const li = document.createElement('li');
+            
+            if (count === 0) li.classList.add('empty');
+            
+            li.innerHTML = `
+                <span><b>${key}</b>: ${count}</span>
+                <button class="plus-btn" onclick="addItem('${key}')" title="Arttır">+</button>
+            `;
+            
+            list.appendChild(li);
+        }
+    }
+</script>
+
+</body>
+</html>
